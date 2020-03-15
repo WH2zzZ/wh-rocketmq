@@ -41,6 +41,10 @@ public class Consumer {
                 log.info("Message:{}", msgs);
                 log.info("MessageBody:{}", messages);
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                //消息将重试
+//                return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+//                return null;
+//                throw new Exception();
             }
         });
 

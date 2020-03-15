@@ -23,11 +23,14 @@ public class OneWayProducer {
     public static void main(String[] args) throws MQClientException, RemotingException, InterruptedException, MQBrokerException {
         DefaultMQProducer producer = new DefaultMQProducer("group1");
         producer.setNamesrvAddr(ApplicationConstants.NAME_SERVER_ADDR);
+        //重试3次
+        producer.setRetryTimesWhenSendFailed(3);
         producer.start();
 
         for (int i = 0; i < 10; i++) {
             //tag相当于针对topic体进行小的分类
             Message message = new Message(ApplicationConstants.TOPIC, ApplicationConstants.ONEWAY_TAG, ("I send message:" + i).getBytes());
+            message.setKeys("id");
             producer.sendOneway(message);
 
             log.info("SendStatus-success");
