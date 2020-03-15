@@ -17,4 +17,5 @@ public class ApplicationConstants {
     public static final String SORT_TAG = "sort";
     public static final String DELAY_TAG = "delay";
     public static final String BATCH_TAG = "batch";
+    public static final String SQL_TAG = "sql";
 }

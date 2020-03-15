@@ -1,8 +1,9 @@
-package com.wanghan.rocketmq.demo.consumer;
+package com.wanghan.rocketmq.demo.filter.sql;
 
 import com.wanghan.rocketmq.constants.ApplicationConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import org.apache.rocketmq.client.consumer.MessageSelector;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
@@ -25,12 +26,7 @@ public class Consumer {
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("group1");
         consumer.setNamesrvAddr(ApplicationConstants.NAME_SERVER_ADDR);
 
-        //设定消费模式：负载均衡|广播模式
-        //默认是负载均衡
-        consumer.setMessageModel(MessageModel.BROADCASTING);
-
-        //tag类型可以 tag1 || tag2，订阅多个tag的消息，如果想订阅所有tag就用*
-        consumer.subscribe(ApplicationConstants.TOPIC, ApplicationConstants.SORT_TAG);
+        consumer.subscribe(ApplicationConstants.TOPIC, MessageSelector.bySql("i>5"));
 
         consumer.registerMessageListener(new MessageListenerConcurrently() {
             @Override
@@ -38,7 +34,6 @@ public class Consumer {
                 List<String> messages = msgs.stream().map(messageExt -> {
                     return new String(messageExt.getBody());
                 }).collect(Collectors.toList());
-                log.info("Message:{}", msgs);
                 log.info("MessageBody:{}", messages);
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
